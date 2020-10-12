@@ -12,32 +12,59 @@ public class Main {
     //       3  4  5  6  7   8
     public static void main(String[] args) {
 
+        // test to find when integer overflows
+//        boolean find_max = true;
+//        for(long i = 0; i < 100; i++){
+//            int number = (int)fibRegular(i);
+//            padder(String.format("%d: %d", i, number));
+//            System.out.println();
+//        }
+//        if(find_max)
+//            return;
+
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(2, 1);
         map.put(1, 0);
 
-        padder("N");
+        padder("X"); padder("N");
         padder("Fib Recur"); padder("Doubling Ratios"); padder("Expected");
         padder("Fib Cache"); padder("Doubling Ratios"); padder("Expected");
         padder("Fib Loop"); padder("Doubling Ratios"); padder("Expected");
         padder("Fib Matrix"); padder("Doubling Ratios"); padder("Expected");
         System.out.println();
 
+        // Code copied to allow for the new timings for X and N
+        // I wrote this before the full writeup was done
+        // the writeup was done maybe a day or two before due date
+        // I dont have the time to change this properly
+
         long[] prevTimes = {1,1,1,1};
         long count = 1;
+        long countPrev = 1;
         while(true){
+            padder(String.valueOf(Math.ceil(Math.log10(count))));
             padder(String.valueOf(count));
-            prevTimes = Run(count, prevTimes);
-            count *= 2;
+            prevTimes = Run(count, prevTimes, countPrev);
+            countPrev = count;
+            count*=2;
+//            if(count > 100){
+//                break;
+//            }
         }
 
     }
+    // found on geeksforgeeks
+    public static int log2(int N)
+    {
+        int result = (int)(Math.log(N) / Math.log(2));
+        return result;
+    }
 
-    private static long[] Run(long n, long[] prevTimes){
+    private static long[] Run(long n, long[] prevTimes, long nPrev){
         String[] testStrings = {"R", "C", "L", "M"};
         int i = 0;
         for(String sortType : testStrings){
-            if(n > 32 && sortType == "R"){
+            if(n > 48 && sortType == "R"){
                 padder("N/A");
                 padder("N/A");
                 padder("N/A");
@@ -63,22 +90,22 @@ public class Main {
             double expected = 1;
             if(sortType == "R"){
                 fibRecur(n);
-                expected = Math.pow(2, n) / Math.pow(2, n/2);
+                expected = Math.pow(2, n) / Math.pow(2, nPrev);
             }
             if(sortType == "C"){
                 HashMap<Long, Long> map = new HashMap<>();
                 map.put(2L, 1L);
                 map.put(1L, 0L);
                 fibCache(n, map);
-                expected = 2;
+                expected = (double)n / (double)(nPrev);
             }
             if(sortType == "L"){
                 fibRegular(n);
-                expected = 2;
+                expected = (double)(n) / (double)(nPrev);;
             }
             if(sortType == "M"){
                 fibRegular(n);
-                expected = 2;
+                expected = (double)(n) / (double)(nPrev);
             }
 
             long timeStampAfter = getCpuTime();
@@ -86,7 +113,7 @@ public class Main {
             if(time <= 0){
                 time = 1;
             }
-            double actual = (time / prevTimes[i]);
+            double actual = (time / (double)prevTimes[i]);
             prevTimes[i] = time;
 
 
@@ -125,11 +152,11 @@ public class Main {
     }
 
     public static long fibRegular(long n){
-        int x = 0;
-        int y = 1;
+        long x = 0;
+        long y = 1;
 
-        for(int i = 3; i <= n; i++) {
-            int z = x + y;
+        for(long i = 3; i <= n; i++) {
+            long z = x + y;
             x = y;
             y = z;
         }
@@ -152,7 +179,7 @@ public class Main {
         long[][] fib_mat = {{1,1},{1,0}};
         long[][] fib_mul = {{1,1},{1,0}};
 
-        for(int i = 3; i < n; i++){
+        for(long i = 3; i < n; i++){
             long[][] ret_fib = new long[2][2];
             ret_fib[0][0] = fib_mat[0][0]*fib_mul [0][0] + fib_mat[0][1]*fib_mul [1][0];
             ret_fib[0][1] = fib_mat[0][0]*fib_mul [0][1] + fib_mat[0][1]*fib_mul [1][1];
@@ -200,3 +227,4 @@ public class Main {
         return bean.isCurrentThreadCpuTimeSupported() ? bean.getCurrentThreadCpuTime() : 0L;
     }
 }
+
