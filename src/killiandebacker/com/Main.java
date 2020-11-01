@@ -26,7 +26,7 @@ public class Main {
         map.put(2, 1);
         map.put(1, 0);
 
-        padder("X"); padder("N");
+        padder("N"); padder("X");
         padder("Fib Recur"); padder("Doubling Ratios"); padder("Expected");
         padder("Fib Cache"); padder("Doubling Ratios"); padder("Expected");
         padder("Fib Loop"); padder("Doubling Ratios"); padder("Expected");
@@ -42,7 +42,7 @@ public class Main {
         long count = 1;
         long countPrev = 1;
         while(true){
-            padder(String.valueOf(Math.ceil(Math.log10(count))));
+            padder(String.valueOf(countBits(count)));
             padder(String.valueOf(count));
             prevTimes = Run(count, prevTimes, countPrev);
             countPrev = count;
@@ -53,11 +53,11 @@ public class Main {
         }
 
     }
-    // found on geeksforgeeks
-    public static int log2(int N)
+
+    // found on geeks for geeks
+    static int countBits(long number)
     {
-        int result = (int)(Math.log(N) / Math.log(2));
-        return result;
+        return (int)(Math.log(number) / Math.log(2) + 1);
     }
 
     private static long[] Run(long n, long[] prevTimes, long nPrev){
@@ -154,6 +154,9 @@ public class Main {
     public static long fibRegular(long n){
         long x = 0;
         long y = 1;
+        if(n == 1 || n == 2){
+            return n  - 1;
+        }
 
         for(long i = 3; i <= n; i++) {
             long z = x + y;
@@ -163,7 +166,7 @@ public class Main {
         return y;
     }
 
-    static long[][] multiply(long fib_mat[][], long mul_fib[][])
+    public static long[][] multiply(long fib_mat[][], long mul_fib[][])
     {
         long[][] ret_fib = new long[2][2];
         ret_fib[0][0] = fib_mat[0][0]*mul_fib[0][0] + fib_mat[0][1]*mul_fib[1][0];
@@ -175,9 +178,13 @@ public class Main {
 
     }
 
-    static long fibMatrix(long n){
+    public static long fibMatrix(long n){
         long[][] fib_mat = {{1,1},{1,0}};
         long[][] fib_mul = {{1,1},{1,0}};
+
+        if(n == 1 || n == 2){
+            return n  - 1;
+        }
 
         for(long i = 3; i < n; i++){
             long[][] ret_fib = new long[2][2];
